@@ -6,6 +6,7 @@ Created on Fri Jan 14 20:20:03 2022
         Reece Tilgner
 """
 #Hello RYAN LOOK HEREEEEEE
+#Seen
 import PyPDF2 as PyDF
 
 ### Opens a file, important to use mode='rb' for binary read mode
