@@ -83,11 +83,11 @@ class PyStatement:
     def __compress(self):
         newList = []
         startCompress = False
-        ### Selects one page
-        for i in range(self.len):
-            ### Selects one word
-            for word in self.dataList[i]:
-                
+        ### Selects one page from dataList
+        for i in range(len(self.dataList)):
+            for j in range(len(self.dataList[i])):
+                ### Selects one word the page
+                word = self.dataList[i][j]
                 ### Checks if the word is one character long
                 if (len(word) == 1):
                     ### If a new compressed word has not been started
@@ -98,9 +98,8 @@ class PyStatement:
                     ### Add next character onto word
                     compressed += word
                     
-                
                 ### If the next word longer than one character
-                
+                else:
                     ### If a compressed word has been made, append it to the list
                     ### and ends the compressed word
                     if startCompress:
@@ -109,6 +108,10 @@ class PyStatement:
                     ### Append the next word to the list
                     newList.append(word)
                     
+                ### If the last word on the page is reached adn there is a
+                ### compressed word being made, add the word to the list
+                if ( (j == len(self.dataList[i]) - 1) and startCompress):
+                    newList.append(compressed)
             self.dataList[i] = newList
             newList = []
                 
