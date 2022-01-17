@@ -18,7 +18,7 @@ class PyStatement:
     ### Pre: Initialization
     ### Post: Converts file in_file to parseable data and sets atributes
     def __init__(self, in_file):
-        self.name = in_file
+        self.name = in_file.split(".")[0]
         
         ### Open file to be read, closes when done
         ### Must use mode="rb" for binary read mode
