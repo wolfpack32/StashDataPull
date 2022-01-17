@@ -12,4 +12,4 @@ Created on Fri Jan 14 20:20:03 2022
 from PyStatement import PyStatement as Statement
 
 June = Statement("JuneDoc.pdf")
-print(June.dataList[4])
+June.toFile("TSV")
