@@ -78,22 +78,37 @@ class PyStatement:
             print("File written as a " + file_type +"\n")
             
             
+    ### Pre: self
+    ### Post: compresses consecutive single characters into one string
     def __compress(self):
         newList = []
         startCompress = False
+        ### Selects one page
         for i in range(self.len):
+            ### Selects one word
             for word in self.dataList[i]:
+                
+                ### Checks if the word is one character long
                 if (len(word) == 1):
+                    ### If a new compressed word has not been started
+                    ### start a new one
                     if (not startCompress):
                         compressed = ""
                         startCompress = True
+                    ### Add next character onto word
                     compressed += word
-                else:
+                    
+                
+                ### If the next word longer than one character
+                
+                    ### If a compressed word has been made, append it to the list
+                    ### and ends the compressed word
                     if startCompress:
                         newList.append(compressed)
                         startCompress = False
-                    else:
-                        newList.append(word)
+                    ### Append the next word to the list
+                    newList.append(word)
+                    
             self.dataList[i] = newList
             newList = []
                 
