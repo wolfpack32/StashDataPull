@@ -53,6 +53,7 @@ class PyStatement:
             
             ### User notification
             print("File " + self.name + " converted\n")
+            self.__compress()
             
             
     ### Pre: CSV or TSV as string for file type
@@ -76,3 +77,23 @@ class PyStatement:
             writer.writerows(self.dataList)
             print("File written as a " + file_type +"\n")
             
+            
+    def __compress(self):
+        newList = []
+        startCompress = False
+        for i in range(self.len):
+            for word in self.dataList[i]:
+                if (len(word) == 1):
+                    if (not startCompress):
+                        compressed = ""
+                        startCompress = True
+                    compressed += word
+                else:
+                    if startCompress:
+                        newList.append(compressed)
+                        startCompress = False
+                    else:
+                        newList.append(word)
+            self.dataList[i] = newList
+            newList = []
+                
