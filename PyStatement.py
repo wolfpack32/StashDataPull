@@ -18,13 +18,17 @@ class PyStatement:
     ### Pre: Initialization
     ### Post: Converts file in_file to parseable data and sets atributes
     def __init__(self, in_file):
+        self.keywords = ["EQUITIES / OPTIONS",
+                         "BUY / SELL TRANSACTIONS",
+                         "DIVIDENDS AND INTEREST"]
         self.name = in_file.split(".")[0]
         
-        ### Open file to be read, closes when done
+        
+        ### Open in_file to be read as bin_doc, closes when done
         ### Must use mode="rb" for binary read mode
         with open(in_file, mode="rb") as bin_doc:
             
-            ### Converts the in_file to a PyPDF2 object
+            ### Converts the bin_doc to a PyPDF2 object
             doc = PyDF.PdfFileReader(bin_doc)
             
             
@@ -54,7 +58,7 @@ class PyStatement:
             ### User notification
             print("File " + self.name + " converted\n")
             self.__compress()
-            
+            self.__trim()
             
     ### Pre: CSV or TSV as string for file type
     ### Post: Writes a CSV or TSV file with the data from read document
@@ -83,8 +87,9 @@ class PyStatement:
     def __compress(self):
         newList = []
         startCompress = False
+        compressed = ""
         ### Selects one page from dataList
-        for i in range(len(self.dataList)):
+        for i in range(self.len):
             for j in range(len(self.dataList[i])):
                 ### Selects one word the page
                 word = self.dataList[i][j]
@@ -114,4 +119,51 @@ class PyStatement:
                     newList.append(compressed)
             self.dataList[i] = newList
             newList = []
-                
+            
+    ### Pre: self
+    ### Post: trims irrelevent pages and data from the lists
+    def __trim(self):
+        ### Removes the first two pages and last five
+        self.dataList = self.dataList[2:-5]
+        self.len = len(self.dataList)
+        
+        ### Loops through all words on a page, and checks for keywords
+        ### Removes all preceding words from the dataList
+        for i in range(self.len):
+            while (len(self.dataList[i]) > 0 and not self.dataList[i][0] in self.keywords):
+                self.dataList[i].pop(0)
+            
+        ### Loops through all pages in dataList
+        count = 0
+        while (count < self.len):
+            ### If the page has length 0, page is removed
+            ### Statement len decreased by 1
+            if(len(self.dataList[count]) == 0):
+                self.dataList.pop(count)
+                self.len -= 1
+            ### If the page has data
+            else:
+                ### Checks for keyword "continued"
+                if(self.dataList[count][1] == "  (continued)"):
+                    ### Removes first 2 strings in the list 
+                    self.dataList[count] = self.dataList[count][2:]
+                else:
+                    ### Removes first string in the list
+                    self.dataList[count].pop(0)
+                count += 1
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
