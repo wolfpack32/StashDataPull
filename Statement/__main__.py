@@ -24,8 +24,8 @@ finally:
 """
 
 try:
-    June = Statement.PyStatement("JuneDoc.pdf")
-    June.toFile("CSV")
+    #June = Statement.PyStatement("JuneDoc.pdf")
+    #June.toFile("CSV")
     print("file converted")
     
 except PermissionError:
