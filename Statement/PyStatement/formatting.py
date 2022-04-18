@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 18 10:29:59 2022
+
+@author: rtilgner
+"""
 
 ### PyPDF2 library found in local directory
 import PyPDF2 as PyDF
+
+### Imports Stock object for data storage
+### import Stock
 
 ### Imports CSV, Comma-separated values module for writing
 import csv
@@ -22,6 +30,15 @@ class PyStatement:
                          "BUY / SELL TRANSACTIONS",
                          "DIVIDENDS AND INTEREST"]
         self.name = in_file.split(".")[0]
+        self.accTypes = ["C",   ### Cash
+                         "M",   ### Margin
+                         "I",   ### Income
+                         "L",   ### Legal
+                         "S",   ### Short
+                         "X",   ### RVP or DVP
+                         "O"]   ### Other
+        
+        self.positions = []
         
         
         ### Open in_file to be read as bin_doc, closes when done
@@ -59,6 +76,7 @@ class PyStatement:
             print("File " + self.name + " converted\n")
             self.__compress()
             self.__trim()
+                    
             
     ### Pre: CSV or TSV as string for file type
     ### Post: Writes a CSV or TSV file with the data from read document
@@ -70,6 +88,7 @@ class PyStatement:
         ### Opens the file in correct format to be written to as out_file,
         ### closes when done
         with open(self.name + "_converted." + file_type.lower(), "w", newline="") as out_file:
+            """
             if(file_type == "CSV"):
                 print("File " + self.name + " being written to CSV")
                 writer = csv.writer(out_file)
@@ -80,6 +99,20 @@ class PyStatement:
             ### Writes data in dataList to the new file
             writer.writerows(self.dataList)
             print("File written as a " + file_type +"\n")
+            """
+            
+            writer = csv.writer(out_file)
+            temp_list = []
+            running = True
+            while(running):
+                for i in range(len(self.dataList)):
+                    for j in range(len(self.dataList[i])):
+                        if(self.dataList[i][j] in self.keywords):
+                            running = False
+                        elif(self.dataList[i][j] in self.accTypes) and (
+                                self.dataList[i][j+1] not in self.accTypes):
+                            temp_list.append(self.dataList[i][j-2:j+3])
+            writer.writerows(temp_list)
             
             
     ### Pre: self
@@ -91,7 +124,7 @@ class PyStatement:
         ### Selects one page from dataList
         for i in range(self.len):
             for j in range(len(self.dataList[i])):
-                ### Selects one word the page
+                ### Selects one word from the page
                 word = self.dataList[i][j]
                 ### Checks if the word is one character long
                 if (len(word) == 1):
@@ -103,17 +136,23 @@ class PyStatement:
                     ### Add next character onto word
                     compressed += word
                     
-                ### If the next word longer than one character
+                ### If the word is longer than one character
                 else:
                     ### If a compressed word has been made, append it to the list
                     ### and ends the compressed word
                     if startCompress:
-                        newList.append(compressed)
+                        ### Compensation, ticker named "C" gets compressed
+                        if(compressed == "CC"):
+                            newList.append("C")
+                            newList.append("C")
+                        else:
+                            newList.append(compressed)
                         startCompress = False
+                        
                     ### Append the next word to the list
                     newList.append(word)
                     
-                ### If the last word on the page is reached adn there is a
+                ### If the last word on the page is reached and there is a
                 ### compressed word being made, add the word to the list
                 if ( (j == len(self.dataList[i]) - 1) and startCompress):
                     newList.append(compressed)
