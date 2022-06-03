@@ -1,5 +1,7 @@
 # StashDataPull
 
+Using PyPDF, created a new file object called PyStatement.
+
 The Account Statement PDF from Stash does not come well formatted.
 To make use of specific data held in each month's report, the file needs
 to be converted into a csv or tsv file. After this is done, the file is formatted
