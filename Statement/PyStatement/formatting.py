@@ -58,7 +58,7 @@ class PyStatement:
             self.dataList = []
             
             ### User notification
-            print("Converting file " + in_file + " to a PyStatement")
+            print("Converting file " + in_file + " to a PyStatement File")
             
             ### Pulls data from the read document into the list pages
             ### and populates dataList
@@ -72,10 +72,10 @@ class PyStatement:
                 ### pages[i].split() returns a list of \n separated values
                 self.dataList.append(self.pages[i].split("\n"))
             
-            ### User notification
-            print("File " + self.name + " converted\n")
+            self.__getMonthYear(self.dataList[0][1])
             self.__compress()
             self.__trim()
+            
                     
             
     ### Pre: CSV or TSV as string for file type
@@ -87,7 +87,7 @@ class PyStatement:
             
         ### Opens the file in correct format to be written to as out_file,
         ### closes when done
-        with open(self.name + "_converted." + file_type.lower(), "w", newline="") as out_file:
+        with open(self.MonthYear + "." + file_type.lower(), "w", newline="") as out_file:
             """
             if(file_type == "CSV"):
                 print("File " + self.name + " being written to CSV")
@@ -111,10 +111,12 @@ class PyStatement:
                             running = False
                         elif(self.dataList[i][j] in self.accTypes) and (
                                 self.dataList[i][j+1] not in self.accTypes):
+                            if(self.dataList[i][j-2] == ''):
+                                self.dataList[i][j-2] = self.dataList[i][j-1]
                             temp_list.append(self.dataList[i][j-2:j+3])
             writer.writerows(temp_list)
             
-            
+                    
     ### Pre: self
     ### Post: compresses consecutive single characters into one string
     def __compress(self):
@@ -159,6 +161,7 @@ class PyStatement:
             self.dataList[i] = newList
             newList = []
             
+            
     ### Pre: self
     ### Post: trims irrelevent pages and data from the lists
     def __trim(self):
@@ -190,19 +193,8 @@ class PyStatement:
                     ### Removes first string in the list
                     self.dataList[count].pop(0)
                 count += 1
-        
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+    
+    
+    def __getMonthYear(self, snip):
+        snip_list = snip.split()
+        self.MonthYear = snip_list[0] + snip_list[-1]

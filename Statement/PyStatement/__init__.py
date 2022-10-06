@@ -6,8 +6,4 @@ Created on Mon Apr 18 10:26:35 2022
 """
 
 from .formatting import PyStatement
-from .gui import GUI
 __all__ = ["PyStatement"]
-
-window = GUI()
-window.mainloop()
