@@ -5,11 +5,15 @@ Created on Mon Apr 18 13:01:12 2022
 @author: rtilgner
 """
 
+### Statement object, see PyStatement/formatting.py
+import PyStatement as Statement
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as fd
 
 class Screen:
+    global file_names = ""
     def __init__(self):
         root = tk.Tk()
         self.populate(root)
@@ -39,3 +43,4 @@ class Screen:
             initialdir="/",
             filetypes = filetypes)
         label.config(text=filenames)
+        file_names = filenames
